@@ -1,0 +1,45 @@
+# Ignore Node.js-related files and directories
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Ignore build output for React (typically created by create-react-app)
+/build/
+/public/
+/build/
+/*.map
+
+# Environment variables
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE and editor-specific files (e.g., VS Code, WebStorm, Sublime Text)
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+*.swo
+*.swm
+*.lock
+*.bak
+*.patch
+
+# Log files
+logs/
+*.log
+
+# Editor directories and files
+.DS_Store
+Thumbs.db
+
+# Dependency directories
+pids
+logs
+results

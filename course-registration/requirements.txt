@@ -1,0 +1,28 @@
+First Course Registration Project
+
+Frontend
+
+Two pages :- 
+
+/home → Buy course with a button , and also displays the course fee fetched from bc
+/payments → I can see all the payments which are there existing(calls smart contract method)
+
+Backend :- 
+
+
+Listens to events and when a payment is successful , it actually stores it a map
+
+/checkUser → Ensures user is already not there in our map (called before trying to execute smart contract)
+
+
+Smart contract :- 
+
+
+Methods → PaymentForCourse(email) , GetAllPayments
+
+Variables → Course Fee mentioned
+
+
+Event :- PaymentRecieved(email,uint value)
+
+Deploy this Smart Contract on a test net and try out the whole set up
