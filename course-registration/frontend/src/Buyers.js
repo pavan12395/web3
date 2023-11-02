@@ -1,13 +1,13 @@
 import React,{useState} from 'react';
 
 export default function Buyers(){
-    const [buyers,setBuyers] = useState(["kongara.pavan1@gmail.com"]);
+    const [buyers,setBuyers] = useState([]);
     return(
         <div>
             {
                 buyers.map((b)=>
                 {
-                    return <h3>{b}</h3>
+                    return <h3 key={b}>{b}</h3>
                 })
             }
         </div>
