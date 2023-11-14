@@ -8,7 +8,7 @@ async function deploy() {
         const provider = new ethers.JsonRpcProvider(nodeUrl);
 
         // Replace the private key with the private key of your deploying account
-        const privateKey = "0xc2043a2c6415d537e12608bfea9ce0a54dd1e508821b3ed82d19a4af85e37000";
+        const privateKey = "0x3e097ba19442000b6adc5898b92b515b5383bcd1674fb45139c34397747c7804";
         const wallet = new ethers.Wallet(privateKey, provider);
 
         // Read ABI and bytecode from files
@@ -22,9 +22,9 @@ async function deploy() {
 
         // Deploy the contract
         const contract = await contractFactory.deploy();
-        await contract.deployTransaction().wait(1);
+        // await contract.deployTransaction().wait(1);
         console.log("Contract deployed to address:", contract);
-        test(contract);
+        await test(contract);
         return contract; // Return the contract instance for further use if needed
     } catch (error) {
         console.log(error);
@@ -32,13 +32,11 @@ async function deploy() {
     }
 }
 
-async function deploy(contract){
+async function test(contract){
     let transactionResponse = await contract.storeValue("hello world");
-    let transactionReciept = await transactionResponse.wait(1);
-    console.log("Store Value Response : ",transactionReciept);
+    console.log("Store Value Response : ",transactionResponse);
     transactionResponse = await contract.getValue();
-    transactionReciept = await transactionResponse.wait(1);
-    console.log("Get Value Response : ",transactionReciept);
+    console.log("Get Value Response : ",transactionResponse);
 }
 
 deploy()
