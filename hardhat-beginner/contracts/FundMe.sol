@@ -47,6 +47,9 @@ contract FundMe {
     function isOwner() external view returns (bool){
         return msg.sender == owner;
     }
+    function greet(string memory message) external pure returns(string memory) {
+        return message;
+    }
 }
 
 

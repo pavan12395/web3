@@ -1,2 +1,7 @@
 Learnt how a Contract can be deployed using HardHat
 Compiled , Tested using HardHat
+
+
+TODO :- 
+
+1) Deploy this to goerli testnet
