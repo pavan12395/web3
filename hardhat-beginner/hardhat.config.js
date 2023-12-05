@@ -12,3 +12,8 @@ module.exports = {
   }},
   solidity: "0.8.19",
 };
+
+
+/*
+Deployed Goerli Contract :- 0x98d751E32C9933189E36427787ae629c8e594e6b
+*/
