@@ -11,6 +11,12 @@ module.exports = {
     accounts : [process.env.GOERLI_CONTRACT_OWNER_PRIVATE_KEY]
   }},
   solidity: "0.8.19",
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
+  },
+  sourcify: {
+    enabled: true
+  }
 };
 
 
