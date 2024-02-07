@@ -45,6 +45,6 @@ async function TestWithdrawFundsOwner() {
 }
 
 // TestGreet();
-TestGetPaymentDetailsForUserOwner();
+// TestGetPaymentDetailsForUserOwner();
 // TestSendPaymentOwner();
 // TestWithdrawFundsOwner();

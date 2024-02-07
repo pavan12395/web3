@@ -44,6 +44,7 @@ function App() {
      .then(values => {
          setPayments(values)
      });
+     
   }
   useEffect(() => {
     const intervalId = setInterval(() => {
