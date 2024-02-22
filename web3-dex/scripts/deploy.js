@@ -1,32 +1,23 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
+
 const hre = require("hardhat");
 
-async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const unlockTime = currentTimestampInSeconds + 60;
 
-  const lockedAmount = hre.ethers.parseEther("0.001");
-
-  const lock = await hre.ethers.deployContract("Lock", [unlockTime], {
-    value: lockedAmount,
-  });
-
-  await lock.waitForDeployment();
-
-  console.log(
-    `Lock with ${ethers.formatEther(
-      lockedAmount
-    )}ETH and unlock timestamp ${unlockTime} deployed to ${lock.target}`
-  );
+async function main(){
+  const tokenADeployment = await hre.ethers.deployContract("Token",["TokenA","TokenA"]);
+  await tokenADeployment.waitForDeployment();
+  const tokenBDeployment = await hre.ethers.deployContract("Token",["TokenB","TokenB"]);
+  await tokenBDeployment.waitForDeployment();
+  const contract = await hre.ethers.deployContract("AMM",[tokenADeployment.target , tokenBDeployment.target]);
+  await contract.waitForDeployment();
+  const address = contract.target;
+  hre.run("verify",{address:address});
+  hre.run("verify",{address:tokenADeployment.target});
+  hre.run("verify",{address:tokenBDeployment.target});
+  console.log("Deployed AMM Contract Address : ",address);
+  console.log("Deployed TokenA contract address : ",tokenADeployment.target);
+  console.log("Deployed TokenB contract address  : ",tokenBDeployment.target);
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
