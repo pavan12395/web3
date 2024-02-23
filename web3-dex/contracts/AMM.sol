@@ -12,7 +12,8 @@ contract AMM {
     mapping(address => uint) tokenAUserShares;
     mapping(address => uint) tokenBUserShares;
     address[] public liquidityProviders;
-
+    event UpdateShare(uint tokenASharePercent,uint tokenBSharePercent);
+    event TestEvent(uint netAmount , uint netBAmount , uint tokenAPercentage , uint tokenBPercentage);
     constructor(address tokenAAddress,address tokenBAddress){
         tokenA = IERC20(tokenAAddress);
         tokenB = IERC20(tokenBAddress);
@@ -39,8 +40,8 @@ contract AMM {
             result.tokenBAmount = 0;
         }
         else {
-            result.tokenAAmount = tokenAUserShares[msg.sender] * reserveA;
-            result.tokenBAmount = tokenBUserShares[msg.sender] * reserveB;
+            result.tokenAAmount = tokenAUserShares[msg.sender];
+            result.tokenBAmount = tokenBUserShares[msg.sender];
         }
         return result;
     }
@@ -56,6 +57,7 @@ contract AMM {
         tokenB.transferFrom(msg.sender, address(this), tokenBAmount);
         tokenAUserShares[msg.sender] = (tokenAUserShares[msg.sender] * reserveA + tokenAAmount) / (reserveA + tokenAAmount);
         tokenBUserShares[msg.sender] = (tokenBUserShares[msg.sender] * reserveB + tokenBAmount) / (reserveB + tokenBAmount);
+        emit UpdateShare(tokenAUserShares[msg.sender],tokenBUserShares[msg.sender]);
         reserveA += tokenAAmount;
         reserveB += tokenBAmount;
     }
@@ -72,6 +74,7 @@ contract AMM {
     function withDrawAllFunds() public {
         uint tokenAAmount = tokenAUserShares[msg.sender] * reserveA;
         uint tokenBAmount = tokenBUserShares[msg.sender] * reserveB;
+        emit TestEvent(tokenAAmount,tokenBAmount,tokenAUserShares[msg.sender],tokenBUserShares[msg.sender]);
         if(tokenAAmount!=0 && tokenBAmount!=0){
             tokenA.transfer(msg.sender,tokenAAmount);
             tokenB.transfer(msg.sender,tokenBAmount);
