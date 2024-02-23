@@ -12,8 +12,7 @@ contract AMM {
     mapping(address => uint) tokenAUserShares;
     mapping(address => uint) tokenBUserShares;
     address[] public liquidityProviders;
-    event UpdateShare(uint tokenASharePercent,uint tokenBSharePercent);
-    event TestEvent(uint netAmount , uint netBAmount , uint tokenAPercentage , uint tokenBPercentage);
+    
     constructor(address tokenAAddress,address tokenBAddress){
         tokenA = IERC20(tokenAAddress);
         tokenB = IERC20(tokenBAddress);
@@ -57,7 +56,6 @@ contract AMM {
         tokenB.transferFrom(msg.sender, address(this), tokenBAmount);
         tokenAUserShares[msg.sender] = (tokenAUserShares[msg.sender] * reserveA + tokenAAmount) / (reserveA + tokenAAmount);
         tokenBUserShares[msg.sender] = (tokenBUserShares[msg.sender] * reserveB + tokenBAmount) / (reserveB + tokenBAmount);
-        emit UpdateShare(tokenAUserShares[msg.sender],tokenBUserShares[msg.sender]);
         reserveA += tokenAAmount;
         reserveB += tokenBAmount;
     }
@@ -74,7 +72,6 @@ contract AMM {
     function withDrawAllFunds() public {
         uint tokenAAmount = tokenAUserShares[msg.sender] * reserveA;
         uint tokenBAmount = tokenBUserShares[msg.sender] * reserveB;
-        emit TestEvent(tokenAAmount,tokenBAmount,tokenAUserShares[msg.sender],tokenBUserShares[msg.sender]);
         if(tokenAAmount!=0 && tokenBAmount!=0){
             tokenA.transfer(msg.sender,tokenAAmount);
             tokenB.transfer(msg.sender,tokenBAmount);
@@ -115,14 +112,14 @@ contract AMM {
         for(uint i=0;i<liquidityProviders.length;i++){
             address userAddress = liquidityProviders[i];
             uint tokenAUserPercentage = tokenAUserShares[userAddress];
-            uint tokenBUserPercentage = tokenBUserShares[userAddress];
+            uint tokenBUserPercentage = tokenBUserShares[userAddress]; 
             if(tokenAUserPercentage != 0){
                 uint userRewardTokenA = shareTokenA * tokenAUserPercentage;
                 uint userRewardTokenB = shareTokenB * tokenBUserPercentage;
                 tokenAUserPercentage = (reserveA * tokenAUserPercentage + userRewardTokenA) / (reserveA + tokenAAmount);
                 tokenBUserPercentage = (reserveB * tokenBUserPercentage + userRewardTokenB) / (reserveB + tokenBAmount);
-                tokenAUserShares[msg.sender] = tokenAUserPercentage;
-                tokenBUserShares[msg.sender] = tokenBUserPercentage;
+                tokenAUserShares[userAddress] = tokenAUserPercentage;
+                tokenBUserShares[userAddress] = tokenBUserPercentage;
             }
         }
     }
