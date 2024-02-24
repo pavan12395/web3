@@ -12,7 +12,7 @@ export default function UserShare(props){
                 const tokenAAmount = data.tokenAAmount;
                 const tokenBAmount = data.tokenBAmount;
                 console.log(data);
-                setUserShare("TokenA : "+(tokenAAmount*100) + " TokenB : "+(tokenBAmount*100));
+                setUserShare("TokenA : "+(tokenAAmount) + " TokenB : "+(tokenBAmount));
             }
         }
         fetchUserShares();

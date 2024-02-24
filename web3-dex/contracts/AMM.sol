@@ -44,20 +44,58 @@ contract AMM {
         }
         return result;
     }
-    function deposit(uint tokenAAmount,uint tokenBAmount) public {
+    function deposit(uint tokenAAmount,uint tokenBAmount) public returns(uint) {
         require(tokenAAmount > 0,"Amount for deposit cannot be empty");
         if(reserveA>0){
-            require(tokenAAmount * reserveB == tokenBAmount * reserveA , "Equivalent Amounts should be deposited");
-        }
-        if(!_containsLP()){
-            liquidityProviders.push(msg.sender);
+            require(tokenAAmount * reserveB == tokenBAmount * reserveA,"Amounts not equal");
         }
         tokenA.transferFrom(msg.sender,address(this),tokenAAmount);
         tokenB.transferFrom(msg.sender, address(this), tokenBAmount);
-        tokenAUserShares[msg.sender] = (tokenAUserShares[msg.sender] * reserveA + tokenAAmount) / (reserveA + tokenAAmount);
-        tokenBUserShares[msg.sender] = (tokenBUserShares[msg.sender] * reserveB + tokenBAmount) / (reserveB + tokenBAmount);
+        _updateUserSharesPercentageDeposit(tokenAAmount,tokenBAmount);
         reserveA += tokenAAmount;
         reserveB += tokenBAmount;
+        return 0;
+    }
+
+    function _updateUserSharesPercentageDeposit(uint tokenAAmount,uint tokenBAmount) private {
+        uint newReserveA = reserveA + tokenAAmount;
+        uint newReserveB = reserveB + tokenBAmount;
+        if(!_containsLP()){
+            liquidityProviders.push(msg.sender);
+            tokenAUserShares[msg.sender] = (100 * tokenAAmount) / newReserveA;
+            tokenBUserShares[msg.sender] = (100 * tokenBAmount) / newReserveB;
+        }
+        else {
+            uint tokenAOldShare = (tokenAUserShares[msg.sender] * reserveA) / 100;
+            uint tokenBOldShare = (tokenBUserShares[msg.sender] * reserveB) / 100;
+            tokenAUserShares[msg.sender] = (100 * (tokenAOldShare + tokenAAmount)) / (newReserveA);
+            tokenBUserShares[msg.sender] = (100 * (tokenBOldShare + tokenBAmount)) / (newReserveB);
+        }
+        for(uint i=0;i<liquidityProviders.length;i++){
+            address userAddress = liquidityProviders[i];
+            if(userAddress != msg.sender){
+                uint tokenAOldShare = (tokenAUserShares[userAddress] * reserveA) / 100;
+                uint tokenBOldShare = (tokenBUserShares[userAddress] * reserveB) / 100; 
+                tokenAUserShares[userAddress] = (100 * (tokenAOldShare)) / (newReserveA);
+                tokenBUserShares[userAddress] = (100 * (tokenBOldShare)) / (newReserveB); 
+            }
+        }
+    }
+
+    function _updateUserSharesPercentageWithdrawal(uint tokenAAmount,uint tokenBAmount) private {
+        uint newReserveA = reserveA - tokenAAmount;
+        uint newReserveB = reserveB - tokenBAmount;
+        tokenAUserShares[msg.sender] = 0;
+        tokenBUserShares[msg.sender] = 0;
+        for(uint i=0;i<liquidityProviders.length;i++){
+            address userAddress = liquidityProviders[i];
+            if(userAddress != msg.sender){
+                uint tokenAOldShare = (tokenAUserShares[msg.sender] * reserveA) / 100;
+                uint tokenBOldShare = (tokenBUserShares[msg.sender] * reserveB) / 100; 
+                tokenAUserShares[msg.sender] = (100 * (tokenAOldShare)) / (newReserveA);
+                tokenBUserShares[msg.sender] = (100 * (tokenBOldShare)) / (newReserveB); 
+            }
+        }
     }
 
     function _containsLP() private view returns (bool) {
@@ -70,15 +108,15 @@ contract AMM {
     }
 
     function withDrawAllFunds() public {
+        require(_containsLP(),"Given User not a LiqudityProvider");
         uint tokenAAmount = tokenAUserShares[msg.sender] * reserveA;
         uint tokenBAmount = tokenBUserShares[msg.sender] * reserveB;
         if(tokenAAmount!=0 && tokenBAmount!=0){
             tokenA.transfer(msg.sender,tokenAAmount);
             tokenB.transfer(msg.sender,tokenBAmount);
+            _updateUserSharesPercentageWithdrawal(tokenAAmount,tokenBAmount);
             reserveA -= tokenAAmount;
             reserveB -= tokenBAmount;
-            tokenAUserShares[msg.sender] = 0;
-            tokenBUserShares[msg.sender] = 0;
         }
     }
 
@@ -90,10 +128,8 @@ contract AMM {
             uint payOutTokenBAmount = reserveB - tokenBAmountAfterTransaction;
             tokenA.transferFrom(msg.sender,address(this),amount);
             tokenB.transfer(msg.sender,payOutTokenBAmount);
-            uint tokenBAmount = reserveB - (reserveA * reserveB) / (reserveA + amount);
-            _updateUsersSharePercentage(amount-amountIn , amount , tokenBAmount-payOutTokenBAmount , tokenBAmount);
             reserveA += amount;
-            reserveB -= tokenBAmount;
+            reserveB -= payOutTokenBAmount;
         }
         else if(tokenAddress == address(tokenB)){
             uint amountIn = (amount * 97) / 100;
@@ -101,26 +137,8 @@ contract AMM {
             uint payOutTokenAAmount = reserveA - tokenAAmountAfterTransaction;
             tokenB.transferFrom(msg.sender,address(this),amount);
             tokenA.transfer(msg.sender,payOutTokenAAmount);
-            uint tokenAAmount = reserveA - (reserveA * reserveB) / (reserveB + amount);
-            _updateUsersSharePercentage(tokenAAmount - payOutTokenAAmount , tokenAAmount , amount-amountIn , amount);
             reserveB += amount;
-            reserveA -= tokenAAmount;
-        }
-    }
-
-    function _updateUsersSharePercentage(uint shareTokenA , uint tokenAAmount , uint shareTokenB , uint tokenBAmount ) private {
-        for(uint i=0;i<liquidityProviders.length;i++){
-            address userAddress = liquidityProviders[i];
-            uint tokenAUserPercentage = tokenAUserShares[userAddress];
-            uint tokenBUserPercentage = tokenBUserShares[userAddress]; 
-            if(tokenAUserPercentage != 0){
-                uint userRewardTokenA = shareTokenA * tokenAUserPercentage;
-                uint userRewardTokenB = shareTokenB * tokenBUserPercentage;
-                tokenAUserPercentage = (reserveA * tokenAUserPercentage + userRewardTokenA) / (reserveA + tokenAAmount);
-                tokenBUserPercentage = (reserveB * tokenBUserPercentage + userRewardTokenB) / (reserveB + tokenBAmount);
-                tokenAUserShares[userAddress] = tokenAUserPercentage;
-                tokenBUserShares[userAddress] = tokenBUserPercentage;
-            }
+            reserveA -= payOutTokenAAmount;
         }
     }
 }

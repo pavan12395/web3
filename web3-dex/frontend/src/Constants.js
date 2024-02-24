@@ -1,8 +1,7 @@
 
-export const AMMAddress = "0xF027D0F3B41000EbcDe0A3Da16578178789069C3";
-
-export const TokenAAddress = "0x6EAdB324CF6F77C189dbb6BBb9E243521bbcBcC2";
-export const TokenBAddress = "0x1BC8d2a158A324cBFf0751A0c1D919Da1891EcAc";
+export const AMMAddress = "0x0A124bDdd745499C17E657DA0422025A4519e3f7";
+export const TokenAAddress = "0x33e1C336aeE82EDc9A4C22312376E5904bF0ce64";
+export const TokenBAddress = "0xf43Be216CB7DC9b272B53DF430A1060D87C66e47";
 
 export const TokenABI = [
     {
