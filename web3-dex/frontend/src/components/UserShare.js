@@ -7,13 +7,18 @@ export default function UserShare(props){
     const [userShare,setUserShare] = useState(0);
     useEffect(()=>{
         async function fetchUserShares(){
+            try {
             if(ammContract!=null){
                 const data = await ammContract.getUserShareDetails();
-                const tokenAAmount = data.tokenAAmount;
-                const tokenBAmount = data.tokenBAmount;
-                console.log(data);
-                setUserShare("TokenA : "+(tokenAAmount) + " TokenB : "+(tokenBAmount));
+                console.log(data.tokenAAmountPercentage + " and "+data.tokenAAmountPercentage);
+                const tokenAAmount = ethers.utils.formatEther(""+data.tokenAAmountPercentage);
+                const tokenBAmount = ethers.utils.formatEther(""+data.tokenBAmountPercentage);
+                setUserShare("TokenA : "+(tokenAAmount*100) + "% TokenB : "+(tokenBAmount*100)+"%");
             }
+        }
+        catch(e){
+            console.log(e);
+        }
         }
         fetchUserShares();
     },[ammContract]);

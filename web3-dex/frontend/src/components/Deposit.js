@@ -65,7 +65,8 @@ export default function Deposit(props){
             await tokenAContract.approve(AMMAddress,ethers.utils.parseEther(""+output));
         }
         try {
-        await ammContract.deposit(ethers.utils.parseEther(""+depositRef.current.value) , ethers.utils.parseEther(""+output) , options);
+        const data = await ammContract.deposit(ethers.utils.parseEther(""+depositRef.current.value) , ethers.utils.parseEther(""+output) , options);
+        console.log(data);
         }
         catch(e){
             console.log(e);

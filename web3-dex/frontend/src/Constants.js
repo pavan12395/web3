@@ -1,7 +1,7 @@
 
-export const AMMAddress = "0x0A124bDdd745499C17E657DA0422025A4519e3f7";
-export const TokenAAddress = "0x33e1C336aeE82EDc9A4C22312376E5904bF0ce64";
-export const TokenBAddress = "0xf43Be216CB7DC9b272B53DF430A1060D87C66e47";
+export const AMMAddress = "0x4ADd4CaC60510DA99cD3Fe88C1b4A6F22Da10AEF";
+export const TokenAAddress = "0x1185846c04AEf75543CA3CcD78D43a0a5859565D";
+export const TokenBAddress = "0xbfE5b3690E102a16e3175135CC1bfc31131B43d0";
 
 export const TokenABI = [
     {
@@ -344,145 +344,132 @@ export const TokenABI = [
   ]
 
 export const AMMABI = [
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "tokenAAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "address",
-          "name": "tokenBAddress",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "output",
-          "type": "string"
-        }
-      ],
-      "name": "TestEvents",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "tokenAAmount",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "tokenBAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "deposit",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getLiqudityPoolDetails",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tokenAAmount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tokenBAmount",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct AMM.Pair",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getUserShareDetails",
-      "outputs": [
-        {
-          "components": [
-            {
-              "internalType": "uint256",
-              "name": "tokenAAmount",
-              "type": "uint256"
-            },
-            {
-              "internalType": "uint256",
-              "name": "tokenBAmount",
-              "type": "uint256"
-            }
-          ],
-          "internalType": "struct AMM.Pair",
-          "name": "",
-          "type": "tuple"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "name": "liquidityProviders",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "tokenAddress",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        }
-      ],
-      "name": "trade",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withDrawAllFunds",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenAAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "tokenBAddress",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenAAmount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenBAmount",
+        "type": "uint256"
+      }
+    ],
+    "name": "deposit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getLiquidityPoolDetails",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenAAmount",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenBAmount",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AMM.LiqudityDetails",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getUserShareDetails",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenAAmountPercentage",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "tokenBAmountPercentage",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct AMM.UserShareDetails",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "liquidityProviders",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "trade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawAllFunds",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];

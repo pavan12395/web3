@@ -24,12 +24,20 @@ function App() {
 
   useEffect(()=>{
     async function getLiqudityPoolDetails(){
+      try {
         if(ammContract){
-            const details = await ammContract.getLiqudityPoolDetails();
+          const options = {
+            gasLimit: 500000, // Set an appropriate gas limit value
+          };
+            const details = await ammContract.getLiquidityPoolDetails();
             console.log(details);
             setLiquidA(ethers.utils.formatEther(details.tokenAAmount));
             setLiquidB(ethers.utils.formatEther(details.tokenBAmount));
         }
+      }
+      catch(e){
+        console.log(e);
+      }
     }
     getLiqudityPoolDetails();
 },[ammContract]);

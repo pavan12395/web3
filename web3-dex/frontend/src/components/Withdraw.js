@@ -3,7 +3,7 @@ export default function Withdraw(props){
     async function withdrawHandler(e){
         try {
             e.preventDefault();
-            await ammContract.withDrawAllFunds();
+            await ammContract.withdrawAllFunds();
         }
         catch(e){
             alert(e);
